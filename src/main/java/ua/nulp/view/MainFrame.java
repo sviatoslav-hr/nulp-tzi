@@ -9,14 +9,13 @@ import java.util.stream.Collectors;
 
 public class MainFrame extends JFrame {
     private HeaderPanel headerPanel;
-    private DiagramPanel diagramPanel;
-    private CenterPanel centerPanel;
+    private MainPanel mainPanel;
 
     public MainFrame() {
         super("Text analytics");
         init();
         setHeaderPanel();
-        setCenterPanel();
+        setMainPanel();
         pack();
     }
 
@@ -37,9 +36,9 @@ public class MainFrame extends JFrame {
         addToPanel(BorderLayout.NORTH, headerPanel);
     }
 
-    private void setCenterPanel() {
-        centerPanel = new CenterPanel();
-        addToPanel(BorderLayout.CENTER, centerPanel);
+    private void setMainPanel() {
+        mainPanel = new MainPanel();
+        addToPanel(BorderLayout.CENTER, mainPanel);
     }
 
     public void setDiagramPanel(Map<String, Integer> data, int limit) {
@@ -58,17 +57,9 @@ public class MainFrame extends JFrame {
         List<Integer> charGroupsNumbers = charGroups.stream()
                 .map(data::get)
                 .collect(Collectors.toList());
-        this.diagramPanel = new DiagramPanel(getWidth() - 20, 500, charGroups, charGroupsNumbers);
-        addToPanel(BorderLayout.SOUTH, this.diagramPanel);
+        DiagramPanel diagramPanel = new DiagramPanel(getWidth() - 20, 500, charGroups, charGroupsNumbers);
+        mainPanel.setBottomComponent(diagramPanel);
         pack();
-    }
-
-    public void removeDiagramPanel() {
-        if (this.diagramPanel != null) {
-            remove(this.diagramPanel);
-            this.diagramPanel = null;
-            pack();
-        }
     }
 
     private void addToPanel(String name, Component component) {
@@ -76,15 +67,15 @@ public class MainFrame extends JFrame {
     }
 
     public void refresh() {
-        removeDiagramPanel();
-        refreshCenterPanel();
+        refreshMainPanel();
         headerPanel.getTextArea().setText("");
         pack();
     }
 
-    private void refreshCenterPanel() {
-        centerPanel.removeAlphabetLabel();
-        centerPanel.removeResultArea();
+    public void refreshMainPanel() {
+        mainPanel.removeTopComponent();
+        mainPanel.removeCenterComponent();
+        mainPanel.removeBottomComponent();
     }
 
     public String getInputText() {
@@ -95,11 +86,7 @@ public class MainFrame extends JFrame {
         return headerPanel;
     }
 
-    public DiagramPanel getDiagramPanel() {
-        return diagramPanel;
-    }
-
-    public CenterPanel getCenterPanel() {
-        return centerPanel;
+    public MainPanel getMainPanel() {
+        return mainPanel;
     }
 }

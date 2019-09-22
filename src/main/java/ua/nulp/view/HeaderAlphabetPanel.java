@@ -19,7 +19,7 @@ public class HeaderAlphabetPanel extends JPanel {
     }
 
     private void setSortingCheckBox() {
-        sortingCheckBox = new JCheckBox("Sort");
+        sortingCheckBox = new JCheckBox("Sorted");
         add(BorderLayout.EAST, sortingCheckBox);
     }
 

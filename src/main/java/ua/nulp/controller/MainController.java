@@ -40,11 +40,14 @@ public class MainController {
     }
 
     private void clear() {
-        mainFrame.refresh();
+        mainFrame.getMainPanel().removeCenterComponent();
+        mainFrame.getMainPanel().removeBottomComponent();
+        mainFrame.getHeaderPanel().getTextArea().setText("");
+        mainFrame.pack();
     }
 
     private void runAnalyse() {
-        mainFrame.removeDiagramPanel();
+        mainFrame.getMainPanel().removeCenterComponent();
         String text = mainFrame.getHeaderPanel().getTextArea().getText();
         if (text.length() == 0) {
             return;
@@ -58,12 +61,14 @@ public class MainController {
 
     private void setAlphabet(String text) {
         char[] alphabet = textAnalysingService.getAlphabetOf(text).toCharArray();
-        mainFrame.getCenterPanel().setAlphabetLabel("Alphabet: " + Arrays.toString(alphabet));
+        mainFrame.getMainPanel().removeCenterComponent();
+        mainFrame.getMainPanel().setLabel("Alphabet: " + Arrays.toString(alphabet));
     }
 
 
     private void countAlphabetEntries() {
-        mainFrame.removeDiagramPanel();
+        mainFrame.getMainPanel().removeCenterComponent();
+        mainFrame.getMainPanel().removeBottomComponent();
         String text = mainFrame.getInputText();
         if (text.length() == 0) {
             return;
@@ -74,27 +79,28 @@ public class MainController {
     }
 
     private void unselectCipher() {
-        mainFrame.getCenterPanel().clearComponent();
-        mainFrame.getCenterPanel().removeResultArea();
+        mainFrame.getMainPanel().removeTopComponent();
         mainFrame.pack();
     }
 
     private void selectCaesarCipher() {
         CaesarPanel caesarPanel = new CaesarPanel();
-        caesarPanel.getDecodeCaesarShiftButton().addActionListener(e -> solveCesarCipher(caesarPanel, true));
-        caesarPanel.getEncodeCaesarButton().addActionListener(e -> solveCesarCipher(caesarPanel, false));
-        mainFrame.getCenterPanel().setComponent(caesarPanel);
+        caesarPanel.getDecodeCaesarShiftButton()
+                .addActionListener(e -> solveCesarCipher(caesarPanel, true));
+        caesarPanel.getEncodeCaesarButton()
+                .addActionListener(e -> solveCesarCipher(caesarPanel, false));
+        mainFrame.getMainPanel().setTopComponent(caesarPanel);
         mainFrame.pack();
     }
 
 
     private void solveCesarCipher(CaesarPanel caesarPanel, boolean isEncoded) {
-        mainFrame.removeDiagramPanel();
-        mainFrame.getCenterPanel().removeAlphabet();
+        mainFrame.getMainPanel().removeCenterComponent();
+        mainFrame.getMainPanel().removeBottomComponent();
         int caesarShift = caesarPanel.getCaesarShift();
         String decodedText = isEncoded ? textAnalysingService.decodeCesarCipher(mainFrame.getInputText(), caesarShift)
                 : textAnalysingService.encodeCesarCipher(mainFrame.getInputText(), caesarShift);
-        mainFrame.getCenterPanel().setResultArea(decodedText);
+        mainFrame.getMainPanel().setResultArea(decodedText);
         mainFrame.pack();
     }
 }
