@@ -1,22 +1,31 @@
 package ua.nulp.controller;
 
 import ua.nulp.enums.CipherType;
+import ua.nulp.service.implementation.CaesarCipherService;
+import ua.nulp.service.implementation.DirectSubstitutionCipherService;
+import ua.nulp.service.implementation.VigenereCipherService;
+import ua.nulp.service.interfaces.AlphabetService;
+import ua.nulp.service.interfaces.CipherService;
 import ua.nulp.service.interfaces.TextAnalysingService;
 import ua.nulp.view.CaesarPanel;
+import ua.nulp.view.DirectSubstitutionPanel;
 import ua.nulp.view.MainFrame;
+import ua.nulp.view.VigenerePanel;
 
 import javax.swing.*;
-import java.util.Arrays;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 public class MainController {
     private MainFrame mainFrame;
     private TextAnalysingService textAnalysingService;
+    private CipherService cipherService;
+    private AlphabetService alphabetService;
 
-    public MainController(MainFrame mainFrame, TextAnalysingService textAnalysingService) {
+    public MainController(MainFrame mainFrame, TextAnalysingService textAnalysingService,
+                          AlphabetService alphabetService) {
         this.mainFrame = mainFrame;
         this.textAnalysingService = textAnalysingService;
+        this.alphabetService = alphabetService;
         setUpListeners();
     }
 
@@ -33,6 +42,10 @@ public class MainController {
                     String selectedItem = (String) source.getSelectedItem();
                     if (Objects.equals(selectedItem, CipherType.CAESAR.getName())) {
                         selectCaesarCipher();
+                    } else if (Objects.equals(selectedItem, CipherType.DIRECT_SUBSTITUTION.getName())) {
+                        selectDirectSubstitutionCipher();
+                    } else if (Objects.equals(selectedItem, CipherType.VIGENERE.getName())) {
+                        selectVigenereCipher();
                     } else {
                         unselectCipher();
                     }
@@ -84,23 +97,67 @@ public class MainController {
     }
 
     private void selectCaesarCipher() {
+        unselectCipher();
+        setCipherService(new CaesarCipherService(alphabetService));
         CaesarPanel caesarPanel = new CaesarPanel();
-        caesarPanel.getDecodeCaesarShiftButton()
-                .addActionListener(e -> solveCesarCipher(caesarPanel, true));
-        caesarPanel.getEncodeCaesarButton()
-                .addActionListener(e -> solveCesarCipher(caesarPanel, false));
+        caesarPanel.getDecodeButton()
+                .addActionListener(e -> solveCipher(caesarPanel.getShift(), true));
+        caesarPanel.getEncodeButton()
+                .addActionListener(e -> solveCipher(caesarPanel.getShift(), false));
         mainFrame.getMainPanel().setTopComponent(caesarPanel);
         mainFrame.pack();
     }
 
+    private void selectDirectSubstitutionCipher() {
+        unselectCipher();
+        setCipherService(new DirectSubstitutionCipherService(alphabetService));
+        DirectSubstitutionPanel panel = new DirectSubstitutionPanel();
+        panel.getDecodeButton()
+                .addActionListener(e -> solveCipher(panel.getKey(), true));
+        panel.getEncodeButton()
+                .addActionListener(e -> solveCipher(panel.getKey(), false));
+        panel.getRandomButton()
+                .addActionListener(e -> panel.getKeyField()
+                        .setText(shuffleString(alphabetService.getAlphabet())));
+        mainFrame.getMainPanel().setTopComponent(panel);
+        mainFrame.pack();
+    }
 
-    private void solveCesarCipher(CaesarPanel caesarPanel, boolean isEncoded) {
+    private void selectVigenereCipher() {
+        unselectCipher();
+        setCipherService(new VigenereCipherService(alphabetService));
+        VigenerePanel panel = new VigenerePanel();
+        panel.getDecodeButton()
+                .addActionListener(e -> solveCipher(panel.getKey(), true));
+        panel.getEncodeButton()
+                .addActionListener(e -> solveCipher(panel.getKey(), false));
+        mainFrame.getMainPanel().setTopComponent(panel);
+        mainFrame.pack();
+    }
+
+
+    private void solveCipher(Object key, boolean isEncoded) {
         mainFrame.getMainPanel().removeCenterComponent();
         mainFrame.getMainPanel().removeBottomComponent();
-        int caesarShift = caesarPanel.getCaesarShift();
-        String decodedText = isEncoded ? textAnalysingService.decodeCesarCipher(mainFrame.getInputText(), caesarShift)
-                : textAnalysingService.encodeCesarCipher(mainFrame.getInputText(), caesarShift);
-        mainFrame.getMainPanel().setResultArea(decodedText);
+        String text = mainFrame.getInputText();
+        String resultText = isEncoded ? cipherService.decode(text, key)
+                : cipherService.encode(text, key);
+        mainFrame.getMainPanel().setResultArea(resultText);
         mainFrame.pack();
+    }
+
+    private void setCipherService(CipherService cipherService) {
+        this.cipherService = cipherService;
+    }
+
+    private String shuffleString(String input) {
+        List<String> characters = new LinkedList<>(Arrays.asList(input.split("")));
+        StringBuilder output = new StringBuilder(input.length());
+        Random random = new Random(3);
+        while (!characters.isEmpty()) {
+            int randPicker = random.nextInt(characters.size());
+            output.append(characters.remove(randPicker));
+        }
+        return output.toString();
     }
 }

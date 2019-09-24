@@ -1,7 +1,10 @@
 package ua.nulp.enums;
 
 public enum CipherType {
-    NONE("Select cipher"), CAESAR("Caesar cipher");
+    NONE("Select cipher"),
+    CAESAR("Caesar cipher"),
+    DIRECT_SUBSTITUTION("Direct Substitution"),
+    VIGENERE("Vigenère cipher");
 
     private final String name;
 

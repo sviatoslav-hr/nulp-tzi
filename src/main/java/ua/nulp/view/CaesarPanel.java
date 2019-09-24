@@ -4,57 +4,57 @@ import javax.swing.*;
 import java.awt.*;
 
 public class CaesarPanel extends JPanel {
-    private JButton decodeCaesarShiftButton;
-    private JButton encodeCaesarButton;
-    private JTextField caesarShiftField;
+    private JButton decodeButton;
+    private JButton encodeButton;
+    private JTextField shiftField;
 
     public CaesarPanel() {
         setLayout(new FlowLayout(FlowLayout.CENTER));
-        setCaesarShiftField();
-        setDecodeCaesarButton();
-        setEncodeCaesarButton();
+        setShiftField();
+        setDecodeButton();
+        setEncodeButton();
     }
 
-    private void setCaesarShiftField() {
-        this.caesarShiftField = new JTextField(5);
-        caesarShiftField.setText("3");
+    private void setShiftField() {
+        this.shiftField = new JTextField(5);
+        shiftField.setText("3");
         JButton increaseButton = new JButton("+");
         JButton decreaseButton = new JButton("-");
         add(decreaseButton);
-        add(caesarShiftField);
+        add(shiftField);
         add(increaseButton);
         increaseButton.addActionListener(e ->
-                caesarShiftField.setText(String.valueOf(getCaesarShift() + 1)));
+                shiftField.setText(String.valueOf(getShift() + 1)));
         decreaseButton.addActionListener(e ->
-                caesarShiftField.setText(String.valueOf(getCaesarShift() - 1)));
+                shiftField.setText(String.valueOf(getShift() - 1)));
     }
 
-    public int getCaesarShift() {
+    public int getShift() {
         int caesarShift = 0;
         try {
-            caesarShift = Integer.parseInt(caesarShiftField.getText());
+            caesarShift = Integer.parseInt(shiftField.getText());
         } catch (NumberFormatException e) {
             e.printStackTrace();
-            caesarShiftField.setText(String.valueOf(caesarShift));
+            shiftField.setText(String.valueOf(caesarShift));
         }
         return caesarShift;
     }
 
-    private void setDecodeCaesarButton() {
-        this.decodeCaesarShiftButton = new JButton("Decode");
-        add(decodeCaesarShiftButton);
+    private void setDecodeButton() {
+        this.decodeButton = new JButton("Decode");
+        add(decodeButton);
     }
 
-    public JButton getDecodeCaesarShiftButton() {
-        return this.decodeCaesarShiftButton;
+    public JButton getDecodeButton() {
+        return this.decodeButton;
     }
 
-    private void setEncodeCaesarButton() {
-        this.encodeCaesarButton = new JButton("Encode");
-        add(encodeCaesarButton);
+    private void setEncodeButton() {
+        this.encodeButton = new JButton("Encode");
+        add(encodeButton);
     }
 
-    public JButton getEncodeCaesarButton() {
-        return this.encodeCaesarButton;
+    public JButton getEncodeButton() {
+        return this.encodeButton;
     }
 }

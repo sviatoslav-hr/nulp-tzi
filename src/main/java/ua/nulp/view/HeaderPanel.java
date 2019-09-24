@@ -27,6 +27,8 @@ public class HeaderPanel extends JPanel {
         constraints.gridheight = 3;
         textArea = new JTextArea(5, 48);
         textArea.setFocusable(true);
+        textArea.setWrapStyleWord(true);
+        textArea.setLineWrap(true);
         add(new JScrollPane(textArea), constraints);
     }
 

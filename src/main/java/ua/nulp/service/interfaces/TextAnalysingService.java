@@ -12,12 +12,4 @@ public interface TextAnalysingService {
 
     Map<String, Integer> countCharGroupEntries(String text, int minEntries, int charGroupLength);
 
-    String decodeCesarCipher(String text, int shift);
-
-    String decodeCesarCipher(String text, int shift, String alphabet);
-
-    String encodeCesarCipher(String text, int shift);
-
-    String encodeCesarCipher(String text, int shift, String alphabet);
-
 }
