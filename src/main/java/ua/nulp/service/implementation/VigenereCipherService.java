@@ -30,6 +30,16 @@ public class VigenereCipherService implements CipherService {
         return encodeVigenere(text, (String) key, alphabet, false);
     }
 
+    @Override
+    public String autoDecode(String key) {
+        return null;
+    }
+
+    @Override
+    public String autoDecode(String key, String alphabet) {
+        return null;
+    }
+
     private String encodeVigenere(String text, String key, String alphabet, boolean isEncoded) {
         text = text.toLowerCase();
         key = key.toLowerCase();

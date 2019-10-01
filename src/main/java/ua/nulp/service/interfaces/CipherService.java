@@ -8,4 +8,8 @@ public interface CipherService {
     String decode(String text, Object key, String alphabet);
 
     String encode(String text, Object key, String alphabet);
+
+    String autoDecode(String key);
+
+    String autoDecode(String key, String alphabet);
 }

@@ -12,7 +12,7 @@ public class MainFrame extends JFrame {
     private MainPanel mainPanel;
 
     public MainFrame() {
-        super("Text analytics");
+        super("Text analytics by Sviatoslav Khrystyna");
         init();
         setHeaderPanel();
         setMainPanel();

@@ -57,6 +57,16 @@ public class CaesarCipherService implements CipherService {
         return String.valueOf(textArray).toUpperCase();
     }
 
+    @Override
+    public String autoDecode(String key) {
+        return null;
+    }
+
+    @Override
+    public String autoDecode(String key, String alphabet) {
+        return null;
+    }
+
     private Map<String, List<Integer>> getCharsPositions(String text, String alphabet) {
         return getStringListMap(text, alphabet);
     }

@@ -61,15 +61,16 @@ public class MainController {
 
     private void runAnalyse() {
         mainFrame.getMainPanel().removeCenterComponent();
+        mainFrame.getMainPanel().removeBottomComponent();
         String text = mainFrame.getHeaderPanel().getTextArea().getText();
         if (text.length() == 0) {
             return;
         }
         int length = mainFrame.getHeaderPanel().getAnalysePanel().getCharsGroupLength();
-        int minEntries = mainFrame.getHeaderPanel().getAnalysePanel().getMinEntriesNumber();
+        int limit = mainFrame.getHeaderPanel().getAnalysePanel().getMinEntriesNumber();
         setAlphabet(text);
         Map<String, Integer> data = textAnalysingService.countCharGroupEntries(text, 2, length);
-        mainFrame.setDiagramPanel(data, minEntries);
+        mainFrame.setDiagramPanel(data, limit);
     }
 
     private void setAlphabet(String text) {

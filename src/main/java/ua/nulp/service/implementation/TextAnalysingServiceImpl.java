@@ -47,7 +47,7 @@ public class TextAnalysingServiceImpl implements TextAnalysingService {
     }
 
     public Map<String, Integer> countCharGroupEntries(String text, int minEntries, int charGroupLength) {
-        text = text.replace(" ", "_");
+        text = text.replace(" ", "_").replace("\n","");
         Map<String, Integer> map = new HashMap<>();
         int length = text.length();
         for (int i = 0; i + charGroupLength < length; i++) {

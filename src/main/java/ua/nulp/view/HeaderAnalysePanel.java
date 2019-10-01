@@ -33,7 +33,7 @@ public class HeaderAnalysePanel extends JPanel {
 
     private void setMinAmountField() {
         minEntriesField = new JTextField();
-        minEntriesField.setText("10");
+        minEntriesField.setText("15");
         minEntriesField.setColumns(5);
         add(minEntriesField);
     }
