@@ -3,16 +3,21 @@ package ua.nulp.service.implementation;
 import org.junit.Assert;
 import org.junit.Test;
 import ua.nulp.service.interfaces.CipherService;
+import ua.nulp.service.interfaces.FileWritingService;
+import ua.nulp.service.interfaces.TextAnalysingService;
 
 public class DirectSubstitutionCipherServiceTest {
-    private CipherService cipherService =
-            new DirectSubstitutionCipherService(() -> "abcdefghijklmnopqrstuvwxyz .,;-'");
+    private FileReadingServiceImpl fileReadingService = new FileReadingServiceImpl();
+    private FileWritingService fileWritingService = new FileWritingServiceImpl();
+    private TextAnalysingService textAnalysingService = new TextAnalysingServiceImpl();
+    private CipherService cipherService = new DirectSubstitutionCipherService(
+            () -> "abcdefghijklmnopqrstuvwxyz");
 
     @Test
     public void decode() {
         String text = "giuifg cei iprc tpnn du cei qprcni";
         String key = "phqgiumeaylnofdxjkrcvstzwb";
-        String actual = cipherService.decode(text, key);
+        String actual = cipherService.decode(text, key).toUpperCase();
         String expected = "defend the east wall of the castle".toUpperCase();
         Assert.assertEquals(expected, actual);
     }
@@ -21,7 +26,7 @@ public class DirectSubstitutionCipherServiceTest {
     public void encode() {
         String text = "defend the east wall of the castle";
         String key = "phqgiumeaylnofdxjkrcvstzwb";
-        String actual = cipherService.encode(text, key);
+        String actual = cipherService.encode(text, key).toUpperCase();
         String expected = "giuifg cei iprc tpnn du cei qprcni".toUpperCase();
         Assert.assertEquals(expected, actual);
     }

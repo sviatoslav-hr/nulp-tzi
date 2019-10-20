@@ -1,6 +1,6 @@
 package ua.nulp.service.implementation;
 
-import ua.nulp.service.interfaces.AlphabetService;
+import ua.nulp.service.interfaces.Alphabet;
 import ua.nulp.service.interfaces.CipherService;
 
 import java.util.HashMap;
@@ -9,25 +9,26 @@ import java.util.List;
 import java.util.Map;
 
 public class DirectSubstitutionCipherService implements CipherService {
-    private AlphabetService alphabetService;
+    private Alphabet alphabet;
 
-    public DirectSubstitutionCipherService(AlphabetService alphabetService) {
-        this.alphabetService = alphabetService;
+
+    public DirectSubstitutionCipherService(Alphabet alphabet) {
+        this.alphabet = alphabet;
     }
 
     @Override
-    public String decode(String encodedText, Object key) {
-        return decode(encodedText, key, alphabetService.getAlphabet());
+    public String decode(String text, Object key) {
+        return decode(text, key, alphabet.getAlphabet());
     }
 
     @Override
-    public String decode(String encodedText, Object key, String alphabet) {
-        return encode(encodedText, alphabet, (String) key);
+    public String decode(String text, Object key, String alphabet) {
+        return encode(text, alphabet, (String) key);
     }
 
     @Override
     public String encode(String text, Object key) {
-        return encode(text, key, alphabetService.getAlphabet());
+        return encode(text, key, alphabet.getAlphabet());
     }
 
     @Override
@@ -46,16 +47,6 @@ public class DirectSubstitutionCipherService implements CipherService {
                     .forEach(integer -> textArray[integer] = newChar);
         }
         return String.valueOf(textArray).toUpperCase();
-    }
-
-    @Override
-    public String autoDecode(String key) {
-        return null;
-    }
-
-    @Override
-    public String autoDecode(String key, String alphabet) {
-        return null;
     }
 
     private Map<String, List<Integer>> getCharsPositions(String text, String alphabet) {
@@ -77,5 +68,26 @@ public class DirectSubstitutionCipherService implements CipherService {
             map.put(String.valueOf(currentChar), positions);
         }
         return map;
+    }
+
+    public String decodeByTable(String[][] data, String text) {
+        text = text.replace("\n","").toLowerCase();
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < text.length(); i++) {
+            char currentChar = text.charAt(i);
+            String replacingChar = getSymbol(data, currentChar);
+            builder.append(replacingChar);
+        }
+        return builder.toString();
+    }
+
+    private String getSymbol(String[][] data, char c) {
+        for (String[] datum : data) {
+            if (datum[0].contains(String.valueOf(c))) {
+                String res = datum[1].substring(0, 1);
+                return datum[0].equals(datum[1]) ? res : res.toUpperCase();
+            }
+        }
+        return String.valueOf(c);
     }
 }

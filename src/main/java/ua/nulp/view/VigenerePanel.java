@@ -7,12 +7,14 @@ public class VigenerePanel extends JPanel {
     private JTextField keyField;
     private JButton decodeButton;
     private JButton encodeButton;
+    private JButton statisticsButton;
 
     public VigenerePanel() {
         setLayout(new FlowLayout(FlowLayout.CENTER));
         setKeyField();
         setDecodeButton();
         setButton();
+        setStatisticsButton();
     }
 
     public JTextField getKeyField() {
@@ -44,5 +46,14 @@ public class VigenerePanel extends JPanel {
 
     public JButton getEncodeButton() {
         return this.encodeButton;
+    }
+
+    public JButton getStatisticsButton() {
+        return statisticsButton;
+    }
+
+    private void setStatisticsButton() {
+        this.statisticsButton = new JButton("Statistics");
+        add(statisticsButton);
     }
 }

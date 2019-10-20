@@ -23,12 +23,16 @@ public class MainFrame extends JFrame {
         setLocation(50, 0);
         setVisible(true);
         setResizable(false);
+        setTheme();
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+    }
+
+    private void setTheme() {
         try {
             UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
         } catch (Exception e) {
             e.printStackTrace();
         }
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     }
 
     private void setHeaderPanel() {
@@ -42,6 +46,10 @@ public class MainFrame extends JFrame {
     }
 
     public void setDiagramPanel(Map<String, Integer> data, int limit) {
+        data = data.entrySet().stream()
+                .collect(Collectors.toMap(
+                        entry -> entry.getKey().replace(" ", "_"),
+                        Map.Entry::getValue));
         List<String> charGroups = data.keySet()
                 .stream()
                 .sorted(Comparator.comparingInt(data::get).reversed())
@@ -62,6 +70,12 @@ public class MainFrame extends JFrame {
         pack();
     }
 
+    public void setXyDiagramPanel(Map<String, List<Integer>> data, int limit, String... seriesNames) {
+        DiagramPanel diagramPanel = new DiagramPanel(getWidth() - 20, 500, data, limit, seriesNames);
+        mainPanel.setBottomComponent(diagramPanel);
+        pack();
+    }
+
     private void addToPanel(String name, Component component) {
         getContentPane().add(name, component);
     }
@@ -72,7 +86,7 @@ public class MainFrame extends JFrame {
         pack();
     }
 
-    public void refreshMainPanel() {
+    private void refreshMainPanel() {
         mainPanel.removeTopComponent();
         mainPanel.removeCenterComponent();
         mainPanel.removeBottomComponent();

@@ -1,23 +1,23 @@
 package ua.nulp.service.implementation;
 
-import ua.nulp.service.interfaces.AlphabetService;
+import ua.nulp.service.interfaces.Alphabet;
 import ua.nulp.service.interfaces.CipherService;
 
 public class VigenereCipherService implements CipherService {
-    private AlphabetService alphabetService;
+    private Alphabet alphabet;
 
-    public VigenereCipherService(AlphabetService alphabetService) {
-        this.alphabetService = alphabetService;
+    public VigenereCipherService(Alphabet alphabet) {
+        this.alphabet = alphabet;
     }
 
     @Override
-    public String decode(String encodedText, Object key) {
-        return decode(encodedText, key, alphabetService.getAlphabet());
+    public String decode(String text, Object key) {
+        return decode(text, key, alphabet.getAlphabet());
     }
 
     @Override
     public String encode(String text, Object key) {
-        return encode(text, key, alphabetService.getAlphabet());
+        return encode(text, key, alphabet.getAlphabet());
     }
 
     @Override
@@ -28,16 +28,6 @@ public class VigenereCipherService implements CipherService {
     @Override
     public String encode(String text, Object key, String alphabet) {
         return encodeVigenere(text, (String) key, alphabet, false);
-    }
-
-    @Override
-    public String autoDecode(String key) {
-        return null;
-    }
-
-    @Override
-    public String autoDecode(String key, String alphabet) {
-        return null;
     }
 
     private String encodeVigenere(String text, String key, String alphabet, boolean isEncoded) {

@@ -4,7 +4,7 @@ import ua.nulp.enums.CipherType;
 import ua.nulp.service.implementation.CaesarCipherService;
 import ua.nulp.service.implementation.DirectSubstitutionCipherService;
 import ua.nulp.service.implementation.VigenereCipherService;
-import ua.nulp.service.interfaces.AlphabetService;
+import ua.nulp.service.interfaces.Alphabet;
 import ua.nulp.service.interfaces.CipherService;
 import ua.nulp.service.interfaces.TextAnalysingService;
 import ua.nulp.view.CaesarPanel;
@@ -15,17 +15,19 @@ import ua.nulp.view.VigenerePanel;
 import javax.swing.*;
 import java.util.*;
 
+import static ua.nulp.service.StringUtils.shuffleString;
+
 public class MainController {
     private MainFrame mainFrame;
     private TextAnalysingService textAnalysingService;
     private CipherService cipherService;
-    private AlphabetService alphabetService;
+    private Alphabet alphabet;
 
     public MainController(MainFrame mainFrame, TextAnalysingService textAnalysingService,
-                          AlphabetService alphabetService) {
+                          Alphabet alphabet) {
         this.mainFrame = mainFrame;
         this.textAnalysingService = textAnalysingService;
-        this.alphabetService = alphabetService;
+        this.alphabet = alphabet;
         setUpListeners();
     }
 
@@ -68,15 +70,14 @@ public class MainController {
         }
         int length = mainFrame.getHeaderPanel().getAnalysePanel().getCharsGroupLength();
         int limit = mainFrame.getHeaderPanel().getAnalysePanel().getMinEntriesNumber();
-        setAlphabet(text);
         Map<String, Integer> data = textAnalysingService.countCharGroupEntries(text, 2, length);
         mainFrame.setDiagramPanel(data, limit);
     }
 
     private void setAlphabet(String text) {
-        char[] alphabet = textAnalysingService.getAlphabetOf(text).toCharArray();
+        char[] alphabetArray = textAnalysingService.getAlphabetOf(text).toCharArray();
         mainFrame.getMainPanel().removeCenterComponent();
-        mainFrame.getMainPanel().setLabel("Alphabet: " + Arrays.toString(alphabet));
+        mainFrame.getMainPanel().setLabel("Alphabet: " + Arrays.toString(alphabetArray));
     }
 
 
@@ -99,7 +100,7 @@ public class MainController {
 
     private void selectCaesarCipher() {
         unselectCipher();
-        setCipherService(new CaesarCipherService(alphabetService));
+        setCipherService(new CaesarCipherService(alphabet));
         CaesarPanel caesarPanel = new CaesarPanel();
         caesarPanel.getDecodeButton()
                 .addActionListener(e -> solveCipher(caesarPanel.getShift(), true));
@@ -111,37 +112,57 @@ public class MainController {
 
     private void selectDirectSubstitutionCipher() {
         unselectCipher();
-        setCipherService(new DirectSubstitutionCipherService(alphabetService));
-        DirectSubstitutionPanel panel = new DirectSubstitutionPanel();
+        setCipherService(new DirectSubstitutionCipherService(alphabet));
+        DirectSubstitutionPanel panel = new DirectSubstitutionPanel(alphabet.getAlphabet());
         panel.getDecodeButton()
                 .addActionListener(e -> solveCipher(panel.getKey(), true));
         panel.getEncodeButton()
                 .addActionListener(e -> solveCipher(panel.getKey(), false));
         panel.getRandomButton()
                 .addActionListener(e -> panel.getKeyField()
-                        .setText(shuffleString(alphabetService.getAlphabet())));
+                        .setText(shuffleString(alphabet.getAlphabet())));
+        panel.onEditCell((s, o) -> decodeByTable(panel));
+        panel.getTableDecodeButton().addActionListener(e -> decodeByTable(panel));
         mainFrame.getMainPanel().setTopComponent(panel);
+        mainFrame.pack();
+    }
+
+    private void decodeByTable(DirectSubstitutionPanel panel) {
+        String result = ((DirectSubstitutionCipherService) cipherService)
+                .decodeByTable(panel.getTableData(), mainFrame.getInputText());
+        mainFrame.getMainPanel().setResultArea(result);
         mainFrame.pack();
     }
 
     private void selectVigenereCipher() {
         unselectCipher();
-        setCipherService(new VigenereCipherService(alphabetService));
+        setCipherService(new VigenereCipherService(alphabet));
         VigenerePanel panel = new VigenerePanel();
         panel.getDecodeButton()
                 .addActionListener(e -> solveCipher(panel.getKey(), true));
         panel.getEncodeButton()
                 .addActionListener(e -> solveCipher(panel.getKey(), false));
+        panel.getStatisticsButton()
+                .addActionListener(e -> showVigenereStatistics(panel));
         mainFrame.getMainPanel().setTopComponent(panel);
         mainFrame.pack();
     }
 
-
-    private void solveCipher(Object key, boolean isEncoded) {
+    private void showVigenereStatistics(VigenerePanel panel) {
         mainFrame.getMainPanel().removeCenterComponent();
         mainFrame.getMainPanel().removeBottomComponent();
         String text = mainFrame.getInputText();
-        String resultText = isEncoded ? cipherService.decode(text, key)
+        String encodedText = cipherService.encode(text, panel.getKey());
+        Map<String, List<Integer>> data = textAnalysingService.countCharGroupEntries(1, 1, text, encodedText);
+        mainFrame.setXyDiagramPanel(data, Integer.MAX_VALUE, "Open", "Encoded");
+    }
+
+
+    private void solveCipher(Object key, boolean decode) {
+        mainFrame.getMainPanel().removeCenterComponent();
+        mainFrame.getMainPanel().removeBottomComponent();
+        String text = mainFrame.getInputText();
+        String resultText = decode ? cipherService.decode(text, key)
                 : cipherService.encode(text, key);
         mainFrame.getMainPanel().setResultArea(resultText);
         mainFrame.pack();
@@ -149,16 +170,5 @@ public class MainController {
 
     private void setCipherService(CipherService cipherService) {
         this.cipherService = cipherService;
-    }
-
-    private String shuffleString(String input) {
-        List<String> characters = new LinkedList<>(Arrays.asList(input.split("")));
-        StringBuilder output = new StringBuilder(input.length());
-        Random random = new Random(3);
-        while (!characters.isEmpty()) {
-            int randPicker = random.nextInt(characters.size());
-            output.append(characters.remove(randPicker));
-        }
-        return output.toString();
     }
 }

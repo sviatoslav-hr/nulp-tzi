@@ -34,6 +34,7 @@ public class MainPanel extends JPanel {
     public void setResultArea(String text) {
         removeBottomComponent();
         JTextArea textArea = new JTextArea(16, 50);
+        textArea.setFont(textArea.getFont().deriveFont(18f));
         textArea.setText(text);
         textArea.setWrapStyleWord(true);
         textArea.setLineWrap(true);

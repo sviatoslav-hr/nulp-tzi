@@ -1,5 +1,5 @@
 package ua.nulp.service.interfaces;
 
-public interface AlphabetService {
+public interface Alphabet {
     String getAlphabet();
 }

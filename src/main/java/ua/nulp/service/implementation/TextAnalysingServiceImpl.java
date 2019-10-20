@@ -2,9 +2,7 @@ package ua.nulp.service.implementation;
 
 import ua.nulp.service.interfaces.TextAnalysingService;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class TextAnalysingServiceImpl implements TextAnalysingService {
@@ -47,7 +45,7 @@ public class TextAnalysingServiceImpl implements TextAnalysingService {
     }
 
     public Map<String, Integer> countCharGroupEntries(String text, int minEntries, int charGroupLength) {
-        text = text.replace(" ", "_").replace("\n","");
+        text = text.replace("\n", "");
         Map<String, Integer> map = new HashMap<>();
         int length = text.length();
         for (int i = 0; i + charGroupLength < length; i++) {
@@ -58,6 +56,22 @@ public class TextAnalysingServiceImpl implements TextAnalysingService {
             }
         }
         return map;
+    }
+
+    @Override
+    public Map<String, List<Integer>> countCharGroupEntries(int minEntries, int charGroupLength, String... texts) {
+        Map<String, List<Integer>> data = new LinkedHashMap<>();
+        for (String text : texts) {
+            Map<String, Integer> textEntries = countCharGroupEntries(text, minEntries, charGroupLength);
+            textEntries.keySet().forEach(key -> data.putIfAbsent(key, new ArrayList<>()));
+        }
+        for (String text : texts) {
+            Map<String, Integer> textEntries = countCharGroupEntries(text, minEntries, charGroupLength);
+            data.keySet().forEach(key -> data.get(key)
+                    .add(textEntries
+                            .computeIfAbsent(key, s -> 0)));
+        }
+        return data;
     }
 
 }
