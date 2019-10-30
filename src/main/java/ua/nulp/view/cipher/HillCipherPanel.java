@@ -1,15 +1,15 @@
-package ua.nulp.view;
+package ua.nulp.view.cipher;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class VigenerePanel extends JPanel {
+public class HillCipherPanel extends JPanel implements StatisticalCipherPanel {
     private JTextField keyField;
     private JButton decodeButton;
     private JButton encodeButton;
     private JButton statisticsButton;
 
-    public VigenerePanel() {
+    public HillCipherPanel() {
         setLayout(new FlowLayout(FlowLayout.CENTER));
         setKeyField();
         setDecodeButton();
@@ -21,6 +21,7 @@ public class VigenerePanel extends JPanel {
         return keyField;
     }
 
+    @Override
     public String getKey() {
         return keyField.getText();
     }

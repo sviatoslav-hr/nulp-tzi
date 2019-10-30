@@ -38,7 +38,19 @@
             <artifactId>xchart</artifactId>
             <version>3.5.4</version>
         </dependency>
-        
+        <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-math3 -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-math3</artifactId>
+            <version>3.6.1</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-rsa -->
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-rsa</artifactId>
+            <version>1.0.8.RELEASE</version>
+        </dependency>
+
 
 
 

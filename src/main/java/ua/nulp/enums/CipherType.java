@@ -4,7 +4,8 @@ public enum CipherType {
     NONE("Select cipher"),
     CAESAR("Caesar cipher"),
     DIRECT_SUBSTITUTION("Direct Substitution"),
-    VIGENERE("Vigenère cipher");
+    VIGENERE("Vigenère cipher"),
+    HILL("Hill cipher");
 
     private final String name;
 

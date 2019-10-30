@@ -1,4 +1,4 @@
-package ua.nulp.view;
+package ua.nulp.view.cipher;
 
 import javax.swing.*;
 import java.awt.*;

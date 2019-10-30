@@ -3,14 +3,13 @@ package ua.nulp.controller;
 import ua.nulp.enums.CipherType;
 import ua.nulp.service.implementation.CaesarCipherService;
 import ua.nulp.service.implementation.DirectSubstitutionCipherService;
+import ua.nulp.service.implementation.HillCipherService;
 import ua.nulp.service.implementation.VigenereCipherService;
 import ua.nulp.service.interfaces.Alphabet;
 import ua.nulp.service.interfaces.CipherService;
 import ua.nulp.service.interfaces.TextAnalysingService;
-import ua.nulp.view.CaesarPanel;
-import ua.nulp.view.DirectSubstitutionPanel;
+import ua.nulp.view.cipher.*;
 import ua.nulp.view.MainFrame;
-import ua.nulp.view.VigenerePanel;
 
 import javax.swing.*;
 import java.util.*;
@@ -48,7 +47,9 @@ public class MainController {
                         selectDirectSubstitutionCipher();
                     } else if (Objects.equals(selectedItem, CipherType.VIGENERE.getName())) {
                         selectVigenereCipher();
-                    } else {
+                    } else if (Objects.equals(selectedItem, CipherType.HILL.getName())) {
+                        selectHillCipher();
+                    }else {
                         unselectCipher();
                     }
                 });
@@ -138,17 +139,28 @@ public class MainController {
         unselectCipher();
         setCipherService(new VigenereCipherService(alphabet));
         VigenerePanel panel = new VigenerePanel();
+        selectStatisticalCipherPanel(panel);
+    }
+
+    private void selectHillCipher() {
+        unselectCipher();
+        setCipherService(new HillCipherService(alphabet));
+        HillCipherPanel panel = new HillCipherPanel();
+        selectStatisticalCipherPanel(panel);
+    }
+
+    private void selectStatisticalCipherPanel(StatisticalCipherPanel panel) {
         panel.getDecodeButton()
                 .addActionListener(e -> solveCipher(panel.getKey(), true));
         panel.getEncodeButton()
                 .addActionListener(e -> solveCipher(panel.getKey(), false));
         panel.getStatisticsButton()
-                .addActionListener(e -> showVigenereStatistics(panel));
-        mainFrame.getMainPanel().setTopComponent(panel);
+                .addActionListener(e -> showCipherStatistics(panel));
+        mainFrame.getMainPanel().setTopComponent((JComponent) panel);
         mainFrame.pack();
     }
 
-    private void showVigenereStatistics(VigenerePanel panel) {
+    private void showCipherStatistics(CipherPanel panel) {
         mainFrame.getMainPanel().removeCenterComponent();
         mainFrame.getMainPanel().removeBottomComponent();
         String text = mainFrame.getInputText();
