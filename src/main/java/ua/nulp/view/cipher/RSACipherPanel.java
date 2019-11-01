@@ -3,33 +3,35 @@ package ua.nulp.view.cipher;
 import javax.swing.*;
 import java.awt.*;
 
-public class HillCipherPanel extends JPanel implements StatisticalCipherPanel {
-    private JTextField keyField;
+public class RSACipherPanel extends JPanel implements StatisticalCipherPanel {
+    private JTextField pKeyField;
+    private JTextField qKeyField;
     private JButton decodeButton;
     private JButton encodeButton;
     private JButton statisticsButton;
 
-    public HillCipherPanel() {
+    public RSACipherPanel() {
         setLayout(new FlowLayout(FlowLayout.CENTER));
-        setKeyField();
+        setKeyFields();
         setDecodeButton();
         setButton();
         setStatisticsButton();
     }
 
-    public JTextField getKeyField() {
-        return keyField;
-    }
-
     @Override
     public String getKey() {
-        return keyField.getText();
+        return pKeyField.getText() + " " + qKeyField.getText();
     }
 
-    private void setKeyField() {
-        add(new JLabel("key"));
-        this.keyField = new JTextField(32);
-        add(keyField);
+    private void setKeyFields() {
+        this.pKeyField = new JTextField(8);
+        pKeyField.setText("23");
+        add(new JLabel("p"));
+        add(pKeyField);
+        this.qKeyField = new JTextField(8);
+        qKeyField.setText("71");
+        add(new JLabel("q"));
+        add(qKeyField);
     }
 
     private void setDecodeButton() {

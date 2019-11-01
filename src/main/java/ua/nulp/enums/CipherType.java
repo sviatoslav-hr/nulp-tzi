@@ -5,7 +5,10 @@ public enum CipherType {
     CAESAR("Caesar cipher"),
     DIRECT_SUBSTITUTION("Direct Substitution"),
     VIGENERE("Vigenère cipher"),
-    HILL("Hill cipher");
+    HILL("Hill cipher"),
+    FEISTEL("Feistel cipher"),
+    RSA("RSA cipher"),
+    DES("DES cipher");
 
     private final String name;
 

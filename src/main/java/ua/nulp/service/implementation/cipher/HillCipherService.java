@@ -1,4 +1,4 @@
-package ua.nulp.service.implementation;
+package ua.nulp.service.implementation.cipher;
 
 import org.apache.commons.math3.linear.LUDecomposition;
 import org.apache.commons.math3.linear.MatrixUtils;
@@ -18,12 +18,12 @@ public class HillCipherService implements CipherService {
 
     @Override
     public String decode(String text, Object key) {
-        return decode(text, (String) key, alphabet.getAlphabet());
+        return decode(text, (String) key, alphabet.get());
     }
 
     @Override
     public String encode(String text, Object key) {
-        return encode(text, (String) key, alphabet.getAlphabet());
+        return encode(text, (String) key, alphabet.get());
     }
 
     @Override
@@ -72,10 +72,10 @@ public class HillCipherService implements CipherService {
                 substring = text.substring(i, i + dimension);
             }
             RealMatrix substringVector = createVector(substring, alphabet, dimension);
-            String stringFromVector = getStringFromVector(
-                    mapVector(keyMatrix.multiply(substringVector)
-                                    .getColumn(0),
-                            substringVector.getColumn(0), alphabet.length()), alphabet);
+            RealMatrix multiplied = keyMatrix.multiply(substringVector);
+            RealVector mappedVector = mapVector(multiplied.getColumn(0),
+                    substringVector.getColumn(0), alphabet.length());
+            String stringFromVector = getStringFromVector(mappedVector, alphabet);
             stringBuilder.append(stringFromVector);
         }
         return stringBuilder.toString().trim().toUpperCase();

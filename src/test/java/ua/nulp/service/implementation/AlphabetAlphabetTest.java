@@ -10,7 +10,7 @@ public class AlphabetAlphabetTest {
     @Test
     public void get() {
         String expected = "abcdefghijklmnopqrstuvwxyz .,;-'";
-        String actual = alphabet.getAlphabet();
+        String actual = alphabet.get();
         Assert.assertEquals(expected,actual);
     }
 }

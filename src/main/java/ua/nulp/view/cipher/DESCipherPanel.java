@@ -3,13 +3,13 @@ package ua.nulp.view.cipher;
 import javax.swing.*;
 import java.awt.*;
 
-public class HillCipherPanel extends JPanel implements StatisticalCipherPanel {
+public class DESCipherPanel extends JPanel implements StatisticalCipherPanel {
     private JTextField keyField;
     private JButton decodeButton;
     private JButton encodeButton;
     private JButton statisticsButton;
 
-    public HillCipherPanel() {
+    public DESCipherPanel() {
         setLayout(new FlowLayout(FlowLayout.CENTER));
         setKeyField();
         setDecodeButton();
@@ -27,8 +27,8 @@ public class HillCipherPanel extends JPanel implements StatisticalCipherPanel {
     }
 
     private void setKeyField() {
-        add(new JLabel("key"));
         this.keyField = new JTextField(32);
+        add(new JLabel("key"));
         add(keyField);
     }
 

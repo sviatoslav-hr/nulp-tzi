@@ -1,4 +1,4 @@
-package ua.nulp.service.implementation;
+package ua.nulp.service.implementation.cipher;
 
 import ua.nulp.service.interfaces.Alphabet;
 import ua.nulp.service.interfaces.CipherService;
@@ -18,7 +18,7 @@ public class DirectSubstitutionCipherService implements CipherService {
 
     @Override
     public String decode(String text, Object key) {
-        return decode(text, key, alphabet.getAlphabet());
+        return decode(text, key, alphabet.get());
     }
 
     @Override
@@ -28,7 +28,7 @@ public class DirectSubstitutionCipherService implements CipherService {
 
     @Override
     public String encode(String text, Object key) {
-        return encode(text, key, alphabet.getAlphabet());
+        return encode(text, key, alphabet.get());
     }
 
     @Override

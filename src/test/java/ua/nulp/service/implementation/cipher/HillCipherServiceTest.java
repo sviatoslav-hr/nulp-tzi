@@ -1,10 +1,9 @@
-package ua.nulp.service.implementation;
+package ua.nulp.service.implementation.cipher;
 
 import org.junit.Assert;
 import org.junit.Test;
+import ua.nulp.service.implementation.cipher.HillCipherService;
 import ua.nulp.service.interfaces.CipherService;
-
-import java.math.BigInteger;
 
 public class HillCipherServiceTest {
     private CipherService cipherService = new HillCipherService(() -> "ABCDEFGHIJKLMNOPQRSTUVWXYZ .,;-'");
@@ -38,18 +37,13 @@ public class HillCipherServiceTest {
     @Test
     public void encodeAndDecode() {
         String key = "KHRNSTYNA";
-        String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ .,;-'";
         String text = "E HANDCUFFED TO A WRIST, OR FACE-TO-FACE CONTACT, OR A LOYAL CARRIER PIGEON. THIS REQUIREMENT IS NEVER TRIVIAL AND VERY RAPIDLY BECOMES UNMANAGEABLE AS THE NUMBER OF PARTICIPANTS INCREASES, OR WHEN SECURE CHANNELS AREN'T AVAILABLE FOR KEY EXCHANGE, OR WHEN, AS IS SENSIBLE CRYPTOGRAPHIC PRACTICE, KEYS ARE FREQUENTLY CHANGED. IN PARTICULAR, IF MESSAGES ARE MEANT TO BE SECURE FROM OTHER USERS, A SEPAOF NECESSITY, THE KEY IN EVERY SUCH SYSTEM HAD TO BE EXCHANGED BETWEEN THE COMMUNICATING PARTIES IN SOME SECURE WAY PRIOR TO ANY USE OF THE SYSTEM THE TERM USUALLY USED IS 'VIA A SECURE CHANNEL' SUCH AS A TRUSTWORTHY COURIER WITH A BRIEFCAS ";
+        String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ .,;-'";
         text = text.trim();
         String encoded = cipherService.encode(text, key, alphabet);
         System.out.println("encoded = " + encoded);
         String actual = cipherService.decode(encoded, key, alphabet);
         System.out.println("actual = " + actual);
         Assert.assertEquals(text, actual);
-    }
-
-    @Test
-    public void test() {
-
     }
 }

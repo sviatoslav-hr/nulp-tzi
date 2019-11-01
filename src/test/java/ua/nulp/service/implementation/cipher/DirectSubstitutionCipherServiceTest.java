@@ -1,7 +1,11 @@
-package ua.nulp.service.implementation;
+package ua.nulp.service.implementation.cipher;
 
 import org.junit.Assert;
 import org.junit.Test;
+import ua.nulp.service.implementation.FileReadingServiceImpl;
+import ua.nulp.service.implementation.FileWritingServiceImpl;
+import ua.nulp.service.implementation.TextAnalysingServiceImpl;
+import ua.nulp.service.implementation.cipher.DirectSubstitutionCipherService;
 import ua.nulp.service.interfaces.CipherService;
 import ua.nulp.service.interfaces.FileWritingService;
 import ua.nulp.service.interfaces.TextAnalysingService;

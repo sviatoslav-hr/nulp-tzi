@@ -11,7 +11,7 @@ public class PropertiesAlphabet implements Alphabet {
     private  static  final  String  PROPERTIES_KEY = "app.alphabet";
 
     @Override
-    public String getAlphabet() {
+    public String get() {
         try (InputStream input = PropertiesAlphabet
                 .class.getClassLoader()
                 .getResourceAsStream(PROPERTIES_NAME)) {

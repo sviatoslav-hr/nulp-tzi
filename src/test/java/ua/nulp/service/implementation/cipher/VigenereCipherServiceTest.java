@@ -1,12 +1,9 @@
-package ua.nulp.service.implementation;
+package ua.nulp.service.implementation.cipher;
 
 import org.junit.Assert;
 import org.junit.Test;
+import ua.nulp.service.implementation.cipher.VigenereCipherService;
 import ua.nulp.service.interfaces.CipherService;
-
-import java.util.Arrays;
-
-import static org.junit.Assert.*;
 
 public class VigenereCipherServiceTest {
     private final String alphabet = "abcdefghijklmnopqrstuvwxyz";

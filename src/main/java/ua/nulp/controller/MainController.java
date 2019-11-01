@@ -1,10 +1,7 @@
 package ua.nulp.controller;
 
 import ua.nulp.enums.CipherType;
-import ua.nulp.service.implementation.CaesarCipherService;
-import ua.nulp.service.implementation.DirectSubstitutionCipherService;
-import ua.nulp.service.implementation.HillCipherService;
-import ua.nulp.service.implementation.VigenereCipherService;
+import ua.nulp.service.implementation.cipher.*;
 import ua.nulp.service.interfaces.Alphabet;
 import ua.nulp.service.interfaces.CipherService;
 import ua.nulp.service.interfaces.TextAnalysingService;
@@ -12,6 +9,7 @@ import ua.nulp.view.cipher.*;
 import ua.nulp.view.MainFrame;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
 import java.util.*;
 
 import static ua.nulp.service.StringUtils.shuffleString;
@@ -38,21 +36,29 @@ public class MainController {
         mainFrame.getHeaderPanel().getAlphabetPanel().getAlphabetButton()
                 .addActionListener(e -> countAlphabetEntries());
         mainFrame.getHeaderPanel().getCipherPanel().getComboBox()
-                .addActionListener(e -> {
-                    JComboBox source = (JComboBox) (e.getSource());
-                    String selectedItem = (String) source.getSelectedItem();
-                    if (Objects.equals(selectedItem, CipherType.CAESAR.getName())) {
-                        selectCaesarCipher();
-                    } else if (Objects.equals(selectedItem, CipherType.DIRECT_SUBSTITUTION.getName())) {
-                        selectDirectSubstitutionCipher();
-                    } else if (Objects.equals(selectedItem, CipherType.VIGENERE.getName())) {
-                        selectVigenereCipher();
-                    } else if (Objects.equals(selectedItem, CipherType.HILL.getName())) {
-                        selectHillCipher();
-                    }else {
-                        unselectCipher();
-                    }
-                });
+                .addActionListener(this::setComboBoxListeners);
+    }
+
+    private void setComboBoxListeners(ActionEvent e) {
+        JComboBox source = (JComboBox) (e.getSource());
+        String selectedItem = (String) source.getSelectedItem();
+        if (Objects.equals(selectedItem, CipherType.CAESAR.getName())) {
+            selectCaesarCipher();
+        } else if (Objects.equals(selectedItem, CipherType.DIRECT_SUBSTITUTION.getName())) {
+            selectDirectSubstitutionCipher();
+        } else if (Objects.equals(selectedItem, CipherType.VIGENERE.getName())) {
+            selectVigenereCipher();
+        } else if (Objects.equals(selectedItem, CipherType.HILL.getName())) {
+            selectHillCipher();
+        } else if (Objects.equals(selectedItem, CipherType.FEISTEL.getName())) {
+            selectFeistelCipher();
+        } else if (Objects.equals(selectedItem, CipherType.RSA.getName())) {
+            selectRSACipher();
+        } else if (Objects.equals(selectedItem, CipherType.DES.getName())) {
+            selectDESCipher();
+        } else {
+            unselectCipher();
+        }
     }
 
     private void clear() {
@@ -114,14 +120,14 @@ public class MainController {
     private void selectDirectSubstitutionCipher() {
         unselectCipher();
         setCipherService(new DirectSubstitutionCipherService(alphabet));
-        DirectSubstitutionPanel panel = new DirectSubstitutionPanel(alphabet.getAlphabet());
+        DirectSubstitutionPanel panel = new DirectSubstitutionPanel(alphabet.get());
         panel.getDecodeButton()
                 .addActionListener(e -> solveCipher(panel.getKey(), true));
         panel.getEncodeButton()
                 .addActionListener(e -> solveCipher(panel.getKey(), false));
         panel.getRandomButton()
                 .addActionListener(e -> panel.getKeyField()
-                        .setText(shuffleString(alphabet.getAlphabet())));
+                        .setText(shuffleString(alphabet.get())));
         panel.onEditCell((s, o) -> decodeByTable(panel));
         panel.getTableDecodeButton().addActionListener(e -> decodeByTable(panel));
         mainFrame.getMainPanel().setTopComponent(panel);
@@ -149,6 +155,27 @@ public class MainController {
         selectStatisticalCipherPanel(panel);
     }
 
+    private void selectFeistelCipher() {
+        unselectCipher();
+        setCipherService(new FeistelCipherService(alphabet));
+        FeistelCipherPanel panel = new FeistelCipherPanel();
+        selectStatisticalCipherPanel(panel);
+    }
+
+    private void selectRSACipher() {
+        unselectCipher();
+        setCipherService(new RSACipherService(alphabet));
+        RSACipherPanel panel = new RSACipherPanel();
+        selectStatisticalCipherPanel(panel);
+    }
+
+    private void selectDESCipher() {
+        unselectCipher();
+        setCipherService(new DESCipherService());
+        DESCipherPanel panel = new DESCipherPanel();
+        selectStatisticalCipherPanel(panel);
+    }
+
     private void selectStatisticalCipherPanel(StatisticalCipherPanel panel) {
         panel.getDecodeButton()
                 .addActionListener(e -> solveCipher(panel.getKey(), true));
@@ -165,7 +192,8 @@ public class MainController {
         mainFrame.getMainPanel().removeBottomComponent();
         String text = mainFrame.getInputText();
         String encodedText = cipherService.encode(text, panel.getKey());
-        Map<String, List<Integer>> data = textAnalysingService.countCharGroupEntries(1, 1, text, encodedText);
+        Map<String, List<Integer>> data = textAnalysingService
+                .countCharGroupEntries(1, 1, text, encodedText);
         mainFrame.setXyDiagramPanel(data, Integer.MAX_VALUE, "Open", "Encoded");
     }
 

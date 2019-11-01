@@ -1,4 +1,4 @@
-package ua.nulp.service.implementation;
+package ua.nulp.service.implementation.cipher;
 
 import ua.nulp.service.interfaces.CipherService;
 import ua.nulp.service.interfaces.Alphabet;
@@ -6,7 +6,7 @@ import ua.nulp.service.interfaces.Alphabet;
 import java.util.List;
 import java.util.Map;
 
-import static ua.nulp.service.implementation.DirectSubstitutionCipherService.getStringListMap;
+import static ua.nulp.service.implementation.cipher.DirectSubstitutionCipherService.getStringListMap;
 
 public class CaesarCipherService implements CipherService {
     private Alphabet alphabet;
@@ -18,12 +18,12 @@ public class CaesarCipherService implements CipherService {
 
     @Override
     public String decode(String text, Object key) {
-        return decode(text, key, alphabet.getAlphabet());
+        return decode(text, key, alphabet.get());
     }
 
     @Override
     public String encode(String text, Object key) {
-        return encode(text, key, alphabet.getAlphabet());
+        return encode(text, key, alphabet.get());
     }
 
     @Override

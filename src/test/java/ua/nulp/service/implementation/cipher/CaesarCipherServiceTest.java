@@ -1,7 +1,8 @@
-package ua.nulp.service.implementation;
+package ua.nulp.service.implementation.cipher;
 
 import org.junit.Assert;
 import org.junit.Test;
+import ua.nulp.service.implementation.cipher.CaesarCipherService;
 import ua.nulp.service.interfaces.CipherService;
 
 public class CaesarCipherServiceTest {
