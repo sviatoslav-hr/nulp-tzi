@@ -107,11 +107,9 @@ public class HillCipherService implements CipherService {
     private RealVector mapVector(double[] columnVector, double[] substringVector, int alphabetLength) {
         for (int j = 0; j < columnVector.length; j++) {
             double value = columnVector[j];
-            if (value >= 0) {
-                value = Math.floorMod((int) value, alphabetLength);
-            } else {
-                value = substringVector[j];
-            }
+            value = value >= 0
+                    ? Math.floorMod((int) value, alphabetLength)
+                    : substringVector[j];
             columnVector[j] = value;
         }
         return MatrixUtils.createRealVector(columnVector);

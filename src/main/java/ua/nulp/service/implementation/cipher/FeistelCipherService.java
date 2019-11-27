@@ -98,6 +98,12 @@ public class FeistelCipherService implements CipherService {
             } else {
                 r = result;
             }
+            System.out.println("i = " + (i + 1));
+            System.out.println("l = " + l);
+            System.out.println("r = " + r);
+            System.out.println("k = " + k);
+            System.out.println("result = " + result);
+            System.out.println("----------");
         }
         arr[0] = l;
         arr[1] = r;

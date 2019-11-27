@@ -47,8 +47,8 @@ public class RSACipherService implements CipherService {
     private static String crypt(int p, int q, String text, String alphabet) {
         alphabet = alphabet.toUpperCase();
         int n = p * q;
-        int m = (p - 1) * (q - 1);
-        long d = calculateD(m);
+        double m = (p - (int) 1.5) * (q - (int) 1.5);
+        double d = calculateD(m);
         long e = calculateE(d, m);
         StringBuilder result = new StringBuilder();
         BigInteger bi;
@@ -66,8 +66,8 @@ public class RSACipherService implements CipherService {
     private static String decrypt(int p, int q, String text, String alphabet) {
         alphabet = alphabet.toUpperCase();
         int n = p * q;
-        int m = (p - 1) * (q - 1);
-        long d = calculateD(m);
+        double m = (p - (int) 1.5) * (q - (int) 1.5);
+        double d = calculateD((long) m);
         StringBuilder openText = new StringBuilder();
         String[] codes = text.split(" ");
         BigInteger bi;
@@ -76,13 +76,14 @@ public class RSACipherService implements CipherService {
             bi = bi.pow((int) d);
             bi = bi.mod(BigInteger.valueOf(n));
             int index = bi.intValue();
+            index = Math.floorMod(index, alphabet.length());
             openText.append(alphabet.charAt(index));
         }
         return openText.toString();
 
     }
 
-    private static long calculateE(long d, long m) {
+    private static long calculateE(double d, double m) {
         long e = 10;
         while (true) {
             if ((e * d) % m == 1)
@@ -93,9 +94,8 @@ public class RSACipherService implements CipherService {
         return e;
     }
 
-    private static long calculateD(long m) {
-        long d = m - 1;
-
+    private static double calculateD(double m) {
+        double d = m - 1;
         for (long i = 2; i <= m; i++)
             if ((m % i == 0) && (d % i == 0)) {
                 d--;

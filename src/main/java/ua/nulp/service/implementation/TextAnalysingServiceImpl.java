@@ -47,13 +47,17 @@ public class TextAnalysingServiceImpl implements TextAnalysingService {
     public Map<String, Integer> countCharGroupEntries(String text, int minEntries, int charGroupLength) {
         text = text.replace("\n", "");
         Map<String, Integer> map = new HashMap<>();
-        int length = text.length();
-        for (int i = 0; i + charGroupLength < length; i++) {
+        int textLength = text.length();
+        for (int i = 0; i + charGroupLength < textLength; i++) {
             String charGroup = text.substring(i, i + charGroupLength);
-            int substringsLength = length - text.replace(charGroup, "").length();
-            if (substringsLength / charGroupLength >= minEntries) {
-                map.put(charGroup, substringsLength / charGroupLength);
+            int substringsLength = textLength - text.replace(charGroup, "").length();
+            int charGroupEntries = substringsLength / charGroupLength;
+            if (charGroupEntries >= minEntries) {
+                map.put(charGroup, charGroupEntries);
             }
+        }
+        if (map.size() == 0) {
+            return countCharGroupEntries(text,minEntries - 1,charGroupLength);
         }
         return map;
     }
