@@ -4,6 +4,7 @@ import ua.nulp.service.interfaces.Alphabet;
 import ua.nulp.service.interfaces.CipherService;
 
 import java.math.BigInteger;
+import java.util.Arrays;
 
 public class RSACipherService implements CipherService {
     private Alphabet alphabet;
@@ -44,46 +45,103 @@ public class RSACipherService implements CipherService {
         return crypt(p, q, text, alphabet);
     }
 
-    private static String crypt(int p, int q, String text, String alphabet) {
+    private String crypt(int p, int q, String text, String alphabet) {
         alphabet = alphabet.toUpperCase();
         int n = p * q;
-        double m = (p - (int) 1.5) * (q - (int) 1.5);
+        double m = (p - 1) * (q - 1);
         double d = calculateD(m);
         long e = calculateE(d, m);
         StringBuilder result = new StringBuilder();
-        BigInteger bi;
-        for (int i = 0; i < text.length(); i++) {
-            int index = alphabet.indexOf(text.charAt(i));
-            bi = new BigInteger(String.valueOf(index));
-            bi = bi.pow((int) e);
-            bi = bi.mod(BigInteger.valueOf(n));
-            result.append(bi).append(" ");
+        for (int i = 0; i <= text.length(); i += 3) {
+            String substring = i + 3 > text.length()
+                    ? text.substring(i)
+                    : text.substring(i, i + 3);
+            int[] indexes = getIndexesFromString(substring, alphabet);
+            for (int index : indexes) {
+                result.append(cryptCharIndex(index, e, n)).append(" ");
+            }
         }
         return result.toString();
-
     }
 
-    private static String decrypt(int p, int q, String text, String alphabet) {
+    private int[] getIndexesFromString(String substring, String alphabet) {
+        if (substring.length() < 3) {
+            return getIndexesFromString(substring + " ", alphabet);
+        }
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < substring.length(); i++) {
+            int index = alphabet.indexOf(substring.charAt(i));
+            stringBuilder.append(index < 10
+                    ? "0" + index
+                    : index);
+        }
+        String s = stringBuilder.toString();
+        int center = s.length() / 2;
+        int part1 = Integer.parseInt(s.substring(0, center));
+        int part2 = Integer.parseInt(s.substring(center));
+        return new int[]{part1, part2};
+    }
+
+    private BigInteger cryptCharIndex(int index, long e, int n) {
+        BigInteger bi = BigInteger.valueOf(index);
+        bi = bi.pow((int) e);
+        bi = bi.mod(BigInteger.valueOf(n));
+        return bi;
+    }
+
+    private String decrypt(int p, int q, String text, String alphabet) {
         alphabet = alphabet.toUpperCase();
         int n = p * q;
-        double m = (p - (int) 1.5) * (q - (int) 1.5);
+        double m = (p - 1) * (q - 1);
         double d = calculateD((long) m);
         StringBuilder openText = new StringBuilder();
         String[] codes = text.split(" ");
-        BigInteger bi;
-        for (String item : codes) {
-            bi = new BigInteger(item);
-            bi = bi.pow((int) d);
-            bi = bi.mod(BigInteger.valueOf(n));
-            int index = bi.intValue();
-            index = Math.floorMod(index, alphabet.length());
-            openText.append(alphabet.charAt(index));
+        for (int i = 0; i + 1 < codes.length; i += 2) {
+            int[] indexes = {Integer.parseInt(codes[i]),
+                    Integer.parseInt(codes[i + 1])};
+            decryptCharIndexes(indexes, d, n);
+            openText.append(getStringFromIndexes(indexes, alphabet));
         }
-        return openText.toString();
-
+        return openText.toString().trim();
     }
 
-    private static long calculateE(double d, double m) {
+    private void decryptCharIndexes(int[] indexes, double d, int n) {
+        for (int i = 0; i < indexes.length; i++) {
+            BigInteger index = BigInteger.valueOf(indexes[i]);
+            index = index.pow((int) d);
+            indexes[i] = index.mod(BigInteger.valueOf(n))
+                    .intValue();
+        }
+    }
+
+    private String getStringFromIndexes(int[] parts, String alphabet) {
+        if (parts.length <= 1) {
+            System.out.println("getStringFromIndexes <= 1");
+            return "";
+        } else if (parts.length > 2) {
+            return getStringFromIndexes(Arrays.copyOfRange(parts, 0, 2), alphabet);
+        }
+        StringBuilder indexesBuilder = new StringBuilder();
+        for (int part : parts) {
+            String partString = String.valueOf(part);
+            if (partString.length() == 1) {
+                partString = "00" + partString;
+            } else if (partString.length() == 2) {
+                partString = "0" + partString;
+            }
+            indexesBuilder.append(partString);
+        }
+        String s = indexesBuilder.toString();
+        StringBuilder resultBuilder = new StringBuilder();
+        for (int i = 0; i + 1 < s.length(); i += 2) {
+            int index = Integer.parseInt(s.substring(i, i + 2));
+            index %= alphabet.length();
+            resultBuilder.append(alphabet.charAt(index));
+        }
+        return resultBuilder.toString();
+    }
+
+    private long calculateE(double d, double m) {
         long e = 10;
         while (true) {
             if ((e * d) % m == 1)
@@ -94,7 +152,7 @@ public class RSACipherService implements CipherService {
         return e;
     }
 
-    private static double calculateD(double m) {
+    private double calculateD(double m) {
         double d = m - 1;
         for (long i = 2; i <= m; i++)
             if ((m % i == 0) && (d % i == 0)) {
