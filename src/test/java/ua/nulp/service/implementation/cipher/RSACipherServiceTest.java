@@ -3,8 +3,6 @@ package ua.nulp.service.implementation.cipher;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.ArrayList;
-
 public class RSACipherServiceTest {
     private RSACipherService cipherService = new RSACipherService(() -> "ABCDEFGHIJKLMNOPQRSTUVWXYZ .,;-'");
 

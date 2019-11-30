@@ -48,7 +48,7 @@ public class RSACipherService implements CipherService {
     private String crypt(int p, int q, String text, String alphabet) {
         alphabet = alphabet.toUpperCase();
         int n = p * q;
-        double m = (p - 1) * (q - 1);
+        long m = (p - 1L) * (q - 1L);
         double d = calculateD(m);
         long e = calculateE(d, m);
         StringBuilder result = new StringBuilder();
@@ -58,10 +58,11 @@ public class RSACipherService implements CipherService {
                     : text.substring(i, i + 3);
             int[] indexes = getIndexesFromString(substring, alphabet);
             for (int index : indexes) {
-                result.append(cryptCharIndex(index, e, n)).append(" ");
+                BigInteger encodedIndex = encodeCharIndex(index, e, n);
+                result.append(encodedIndex).append(" ");
             }
         }
-        return result.toString();
+        return result.toString().trim();
     }
 
     private int[] getIndexesFromString(String substring, String alphabet) {
@@ -82,7 +83,7 @@ public class RSACipherService implements CipherService {
         return new int[]{part1, part2};
     }
 
-    private BigInteger cryptCharIndex(int index, long e, int n) {
+    private BigInteger encodeCharIndex(int index, long e, int n) {
         BigInteger bi = BigInteger.valueOf(index);
         bi = bi.pow((int) e);
         bi = bi.mod(BigInteger.valueOf(n));
@@ -92,20 +93,20 @@ public class RSACipherService implements CipherService {
     private String decrypt(int p, int q, String text, String alphabet) {
         alphabet = alphabet.toUpperCase();
         int n = p * q;
-        double m = (p - 1) * (q - 1);
-        double d = calculateD((long) m);
+        long m = (p - 1L) * (q - 1L);
+        double d = calculateD(m);
         StringBuilder openText = new StringBuilder();
         String[] codes = text.split(" ");
         for (int i = 0; i + 1 < codes.length; i += 2) {
             int[] indexes = {Integer.parseInt(codes[i]),
                     Integer.parseInt(codes[i + 1])};
-            decryptCharIndexes(indexes, d, n);
+            decodeCharIndexes(indexes, d, n);
             openText.append(getStringFromIndexes(indexes, alphabet));
         }
         return openText.toString().trim();
     }
 
-    private void decryptCharIndexes(int[] indexes, double d, int n) {
+    private void decodeCharIndexes(int[] indexes, double d, int n) {
         for (int i = 0; i < indexes.length; i++) {
             BigInteger index = BigInteger.valueOf(indexes[i]);
             index = index.pow((int) d);
@@ -116,7 +117,6 @@ public class RSACipherService implements CipherService {
 
     private String getStringFromIndexes(int[] parts, String alphabet) {
         if (parts.length <= 1) {
-            System.out.println("getStringFromIndexes <= 1");
             return "";
         } else if (parts.length > 2) {
             return getStringFromIndexes(Arrays.copyOfRange(parts, 0, 2), alphabet);
@@ -159,7 +159,6 @@ public class RSACipherService implements CipherService {
                 d--;
                 i = 1;
             }
-
         return d;
     }
 }

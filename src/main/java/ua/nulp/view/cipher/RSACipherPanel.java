@@ -25,11 +25,11 @@ public class RSACipherPanel extends JPanel implements StatisticalCipherPanel {
 
     private void setKeyFields() {
         this.pKeyField = new JTextField(8);
-        pKeyField.setText("23");
+        pKeyField.setText("37");
         add(new JLabel("p"));
         add(pKeyField);
         this.qKeyField = new JTextField(8);
-        qKeyField.setText("71");
+        qKeyField.setText("83");
         add(new JLabel("q"));
         add(qKeyField);
     }
